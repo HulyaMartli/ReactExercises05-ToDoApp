@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import "./assets/styles/reset.css"
 import './App.css'
-import {appIcon} from "./components/Icons"
+import { appIcon } from "./components/Icons"
+import { v4 as uuidv4 } from 'uuid';
 
 const DATA_TODOS = [
   { id: 0, content: "Eat.", isCompleted: false },
@@ -11,23 +12,42 @@ const DATA_TODOS = [
 ]
 
 function App() {
-  const [count, setCount] = useState();
+  const [toDos, setToDos] = useState(DATA_TODOS)
+
+  //action addTodo
+  function addToDo(content) {
+    const newToDos = { id: uuidv4(), content, isCompleted: false };
+
+    setToDos([newToDos, ...toDos]);
+  }
+
+  //action deleteTodo
+  function deleteToDo(id) {
+    const newToDos = toDos.filter(item => item.id !== id);
+    setToDos(newToDos);
+
+  }
+
+  //action editTodo
+  function editToDo() {
+
+  }
+
+  //action toggleCompleted
+  function toggleCompleted() {
+
+  }
 
   return (
     <main className='todo-app'>
       <div className='logo'>
-      {appIcon}
-      <h1>To-Do List</h1>
+        {appIcon}
+        <h1>To-Do List</h1>
       </div>
-      <form>
-        <input type="text" name="" id="" placeholder="Write a to-do item..." />
-        <button type="submit">Add</button>
-      </form>
+      <ToDoForm onAddToDo={addToDo} />
 
       <ul>
-        <ToDoItem content="Eat." />
-        <hr/>
-        <ToDoItem content="Code." />
+        {toDos.map(todo => <ToDoItem key={todo.id} id={todo.id} content={todo.content} onDeleteToDo={deleteToDo} />)}
       </ul>
 
     </main>
@@ -35,17 +55,42 @@ function App() {
 
 }
 
-function ToDoItem({ content }) {
+function ToDoForm({ onAddToDo }) {
+  const [content, setContent] = useState("");
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!content.trim()) {
+      return;
+    }
+    onAddToDo(content);
+    console.log("****")
+    console.log(content)
+    setContent("");
+  }
+
+  return (
+    <form id='frm-add-todo'
+      onSubmit={handleSubmit}>
+      <input type="text" name="" id="" placeholder="Write a to-do item..." onChange={(e) => setContent(e.target.value)} value={content} />
+      <button type="submit">Add</button>
+    </form>
+  )
+}
+
+function ToDoItem({ content, onDeleteToDo, id }) {
   const [isEditing, setIsEditing] = useState(false);
 
   const viewTemplate = (
     <li>
       <input type="checkbox" name='' id='' />
       {content}
-      <button type='button' onClick={()=>{
+      <button type='button' onClick={() => {
         setIsEditing(true);
       }}>Edit</button>
-      <button>Delete</button>
+      <button type='button' onClick={() => {
+        onDeleteToDo(id);
+      }}>Delete</button>
     </li>
   );
 
@@ -53,7 +98,7 @@ function ToDoItem({ content }) {
     <li>
       <input type='text' />
       <button type='button'>Save</button>
-      <button type='button' onClick={()=>{
+      <button type='button' onClick={() => {
         setIsEditing(false);
       }}>Close</button>
     </li>

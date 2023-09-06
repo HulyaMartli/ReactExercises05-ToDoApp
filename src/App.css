@@ -1,7 +1,3 @@
-* {
-  margin-bottom: 15px;
-}
-
 body {
   box-sizing: border-box;
   background-color: var(--secondary--color);
@@ -37,6 +33,10 @@ button {
   background-color: var(--primary--color);
   color: var(--default--color);
   border-radius: 5px;
+}
+
+input{
+  margin-bottom: 15px;
 }
 
 .logo {
@@ -93,5 +93,3 @@ button {
 .todo-app ul input[type="checkbox"]:checked {
   accent-color: var(--link--color);
 }
-
-
